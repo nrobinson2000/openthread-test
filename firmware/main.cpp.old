@@ -1,0 +1,113 @@
+#include "Particle.h"
+
+// By Jeremy Ellis
+
+// Particle Mesh Devices Connection Information Testing
+// By Jeremy Ellis
+// needs po-util.com
+
+// Install po-util with the following
+// sudo apt install curl
+// bash <(curl -sL get.po-util.com)
+// Might want to pre install git, node, npm and particle-cli
+// To check po-util version type
+// po
+
+
+
+// Start a po-util project
+// po init argon myArgonProject
+// cd myArgonProject
+
+// po config mesh-develop
+// po setup-mesh
+
+// MODULAR=n po argon build
+
+// particle login
+// particle list
+// particle flash --usb myArgonProject-argon.bin
+
+
+#include "ot_api.h"
+
+extern "C" {
+
+    int8_t    otLinkGetChannel(otInstance* ot);
+    uint16_t  otLinkGetPanId(otInstance* ot);
+    uint8_t   otThreadGetMasterKey(otInstance* ot);
+    char     *otThreadGetNetworkName(otInstance* ot);
+
+    otError ProcessMasterKey(otInstance *aInstance, int argc, char *argv[]);
+
+    //  otInstance* ot
+};
+
+
+void setup() {
+
+}
+
+
+void loop() {
+
+
+    otInstance*  ot = ot_get_instance();
+
+
+   int8_t myChannel = otLinkGetChannel(ot);
+   uint16_t myPanID = otLinkGetPanId(ot);    // otPanId
+
+   char myPanIDBuff[255];
+   snprintf(myPanIDBuff, sizeof(myPanIDBuff), "0x%X", myPanID);   // put hex into myPanIDBuff
+
+   uint8_t myMasterKey = otThreadGetMasterKey(ot);
+   char myMasterKeyBuff[255];
+   snprintf(myMasterKeyBuff, sizeof(myMasterKeyBuff), "%02x", myMasterKey);
+
+   // Copied from https://github.com/openthread/openthread/blob/master/src/cli/cli.cpp#L1456
+      //     otBufferPtr key(reinterpret_cast<const uint8_t *>(otThreadGetMasterKey(mInstance)));
+
+
+           /*
+
+        for (int i = 0; i < OT_MASTER_KEY_SIZE; i++)
+        {
+            mServer->OutputFormat("%02x", key[i]);
+        }
+
+        mServer->OutputFormat("\r\n");
+
+        */
+
+
+// End copy
+
+   char *myNetworkName = otThreadGetNetworkName(ot);
+
+
+   char myNetworkNameBuff[255];
+   snprintf(myNetworkNameBuff, sizeof(myNetworkNameBuff), "%s", myNetworkName);   // network name as a string
+
+
+   Particle.publish("----------------","-------------", 60, PRIVATE);    // just to show a space between samples
+   delay(2000);
+   Particle.publish("Particle Thread ","Connection Information", 60, PRIVATE);    // just to show a space between samples
+   delay(2000);
+   Particle.publish("My Channel: ", String(myChannel), 60, PRIVATE);  //shows printing an integer variable
+
+   delay(2000);
+   Particle.publish("Argon Pan ID: ", String(myPanIDBuff), 60, PRIVATE);  //shows printing an integer variable
+   delay(2000);
+
+   Particle.publish("My Master Key: ", String(myMasterKeyBuff), 60, PRIVATE);  //shows printing an integer variable
+   delay(2000);
+   Particle.publish("My Network Name: ", String(myNetworkNameBuff), 60, PRIVATE);  //shows printing an integer variable
+   delay(2000);
+   Particle.publish("V2.2.0----------------","-------------", 60, PRIVATE);    // just to show a space between samples
+   delay(2000);
+   Particle.publish("Generates the same info","every 60 seconds", 60, PRIVATE);    // just to show a space between samples
+
+
+   delay(60000);  // wait 60 seconds before re-print
+}
