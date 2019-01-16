@@ -1,8 +1,8 @@
 
 // Particle Mesh Devices Connection Information Testing
 // By Jeremy Ellis
-// and Nathan Robinson maker of po-util.com
-
+// and Nathan Robinson: author of po-util.com
+// https://nrobinson.me/
 
 // Install po-util with the following
 // sudo apt install curl
@@ -24,8 +24,6 @@
 // particle list
 // particle flash --usb myArgonProject-argon.bin
 
-
-
 #include "Particle.h"
 
 #define OT_MASTER_KEY_SIZE 16
@@ -42,6 +40,10 @@ otMasterKey *otThreadGetMasterKey(otInstance *aInstance);
 char     *otThreadGetNetworkName(otInstance *aInstance);
 
 };
+
+inline void softDelay(uint32_t msDelay) {
+        for (uint32_t ms = millis(); millis() - ms < msDelay; Particle.process());
+}
 
 void loop() {
 
@@ -69,24 +71,23 @@ void loop() {
         char myNetworkNameBuff[255];
         snprintf(myNetworkNameBuff, sizeof(myNetworkNameBuff), "%s", myNetworkName); // network name as a string
 
-
         Particle.publish("----------------","-------------", 60, PRIVATE); // just to show a space between samples
-        delay(2000);
+        softDelay(2000);
         Particle.publish("Particle Thread ","Connection Information", 60, PRIVATE); // just to show a space between samples
-        delay(2000);
+        softDelay(2000);
         Particle.publish("My Channel: ", String(myChannel), 60, PRIVATE); //shows printing an integer variable
 
-        delay(2000);
+        softDelay(2000);
         Particle.publish("Argon Pan ID: ", String(myPanIDBuff), 60, PRIVATE); //shows printing an integer variable
-        delay(2000);
+        softDelay(2000);
 
         Particle.publish("My Master Key: ", String(myMasterKeyBuff), 60, PRIVATE); //shows printing an integer variable
-        delay(2000);
+        softDelay(2000);
         Particle.publish("My Network Name: ", String(myNetworkNameBuff), 60, PRIVATE); //shows printing an integer variable
-        delay(2000);
+        softDelay(2000);
         Particle.publish("----------------","-------------", 60, PRIVATE); // just to show a space between samples
-        delay(2000);
+        softDelay(2000);
         Particle.publish("Generates the same info","every 60 seconds", 60, PRIVATE); // just to show a space between samples
 
-        delay(60000); // wait 60 seconds before re-print
+        softDelay(60000); // wait 60 seconds before re-print
 }
