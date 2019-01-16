@@ -10,7 +10,7 @@ extern "C" {
 
 int8_t    otLinkGetChannel(otInstance *aInstance);
 uint16_t  otLinkGetPanId(otInstance *aInstance);         // type otPanId
-otMasterKey otThreadGetMasterKey(otInstance *aInstance);
+otMasterKey *otThreadGetMasterKey(otInstance *aInstance);
 char     *otThreadGetNetworkName(otInstance *aInstance);
 
 };
@@ -51,12 +51,10 @@ void loop() {
 
  */
 
-
 // Next Attempt
 
         constexpr char hexmap[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-        const otMasterKey pKey = otThreadGetMasterKey(ot);
-        const otMasterKey *key = &pKey;
+        const otMasterKey *key = otThreadGetMasterKey(ot);
         wchar_t szKey[OT_MASTER_KEY_SIZE * 2 + 1] = { 0 };
         for (uint8_t i = 0; i < OT_MASTER_KEY_SIZE; i++)
         {
