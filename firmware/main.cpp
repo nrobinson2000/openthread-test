@@ -1,3 +1,31 @@
+
+// Particle Mesh Devices Connection Information Testing
+// By Jeremy Ellis
+// and Nathan Robinson maker of po-util.com
+
+
+// Install po-util with the following
+// sudo apt install curl
+// bash <(curl -sL get.po-util.com)
+// Might want to pre install git, node, npm and particle-cli
+// To check po-util version type
+// po
+
+// Start a po-util project
+// po init argon myArgonProject
+// cd myArgonProject
+
+// po config mesh-develop
+// po setup-mesh
+
+// MODULAR=n po argon build
+
+// particle login
+// particle list
+// particle flash --usb myArgonProject-argon.bin
+
+
+
 #include "Particle.h"
 
 #define OT_MASTER_KEY_SIZE 16
@@ -25,34 +53,6 @@ void loop() {
         char myPanIDBuff[255];
         snprintf(myPanIDBuff, sizeof(myPanIDBuff), "0x%02X", myPanID); // put hex into myPanIDBuff
 
-// Begin Changes
-
-
-/*
-
-   uint8_t myMasterKey = otThreadGetMasterKey(ot);
-   char myMasterKeyBuff[255];
-   snprintf(myMasterKeyBuff, sizeof(myMasterKeyBuff), "%s\0", &myMasterKey);
-
- */
-
-/*
-
-        uint8_t myMasterKeyPointer= otThreadGetMasterKey(ot);
-        const uint8_t *myMasterKey = &myMasterKeyPointer;
-        char myMasterKeyBuff[255];
-
-        // MasterKey is an array of 16 bytes (uint8_t)
-        // Convert the array to a string of 32 characters hex digits
-
-        for (unsigned i=0; i < sizeof(myMasterKey); i++) {
-                snprintf(myMasterKeyBuff, sizeof(myMasterKeyBuff), "%s%02X", myMasterKeyBuff, myMasterKey[i]);
-        }
-
- */
-
-// Next Attempt
-
         constexpr char hexmap[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
         const otMasterKey *key = otThreadGetMasterKey(ot);
         wchar_t szKey[OT_MASTER_KEY_SIZE * 2 + 1] = { 0 };
@@ -62,11 +62,8 @@ void loop() {
                 szKey[2 * i + 1] = hexmap[key->m8[i] & 0x0F];
         }
 
-
         char myMasterKeyBuff[255];
         wcstombs(myMasterKeyBuff, szKey, sizeof(myMasterKeyBuff));
-
-// End changes
 
         char *myNetworkName = otThreadGetNetworkName(ot);
         char myNetworkNameBuff[255];
